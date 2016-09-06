@@ -27,6 +27,10 @@ private:
 	static const int GYRO = 5;
 	static const int ENCODER_A = 6;
 	static const int ENCODER_B = 7;
+	
+	//handling robot burnout if we want to show motors other than drive train running  
+	static const int INTAKE_PDP_CHANNEL = 11;
+	Timer * timer;
 
 	//controllers
 	GamepadF310 * pilot;
