@@ -153,11 +153,6 @@ private:
 
 	}
 
-	void TestPeriodic()
-	{
-
-	}
-
 	void DisabledInit() {
 		cameraFeeds -> end();
 	}
