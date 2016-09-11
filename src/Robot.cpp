@@ -60,10 +60,6 @@ private:
 
 	//speed changer
 	static const int TICKS_TO_FULL_SPEED = 15;
-	
-	void arcadeDrive(float forward, float turn, bool squared = false){
-		drive->ArcadeDrive(-forward, turn, squared);
-	}
 
 	void RobotInit() {
 
@@ -100,19 +96,12 @@ private:
 
 	void AutonomousInit()
 	{
-		timer->Reset();
-		timer->Start();
+
 	}
 
 	void AutonomousPeriodic()
 	{
-		float time = timer->Get();
 
-		if (time < 5){
-			arcadeDrive(0.8, 2);
-		} else {
-			arcadeDrive(0, 0);
-		}
 	}
 
 	void TeleopInit()
