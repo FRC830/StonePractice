@@ -14,7 +14,7 @@ class Robot: public IterativeRobot
 {
 
 public:
-	enum Mode{ TANK_DRIVE, ARCADE_DRIVE };	
+	enum driverMode{ TANK_DRIVE, ARCADE_DRIVE };
 
 private: 
 	//drive train
@@ -46,7 +46,7 @@ private:
 
 	//choosing between tank and arcade
 	SendableChooser * modeChooser;
-	Mode driveMode;
+	driverMode driveMode;
 
 	PowerDistributionPanel * pdp;
 	
@@ -79,9 +79,9 @@ private:
 
 		//putting the option to choose between the arcade and tank drives on the smart dashboard
 		modeChooser = new SendableChooser();
-		modeChooser-> AddDefault("Arcade Drive", new Mode(ARCADE_DRIVE));
-		modeChooser-> AddObject("Tank Drive", new Mode(TANK_DRIVE));
-		SmartDashboard::PutData("Moder Chooser", modeChooser);		
+		modeChooser-> AddDefault("Arcade Drive", new driverMode(ARCADE_DRIVE));
+		modeChooser-> AddObject("Tank Drive", new driverMode(TANK_DRIVE));
+		SmartDashboard::PutData("Mode Chooser", modeChooser);
 		
 		//declaring all our sensors
 		gyro = new Lib830::AnalogGyro(GYRO);
@@ -114,7 +114,6 @@ private:
 		//switching between the different drive modes (Tank, Arcade)
 		switch(driveMode) {
 
-			//tank drive
 			case TANK_DRIVE:
 				float leftforward = accel(leftforward, pilot->LeftY(), TICKS_TO_FULL_SPEED);
 				float rightforward = accel(leftforward, pilot->RightY(), TICKS_TO_FULL_SPEED);
@@ -132,6 +131,7 @@ private:
 
 				previous_forward = forward;
 				break;
+		}
 
 		//putting data on the smart dashboard
 		SmartDashboard::PutData("gyro", gyro);
