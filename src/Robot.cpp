@@ -110,7 +110,7 @@ private:
 
 	void TeleopInit()
 	{
-	printf("mode: %i\n", driverMode);
+	printf("mode: %i\n", driveMode);
 	}
 	float previous_forward = 0.0;
 	float leftforward, rightforward, targetForward, turn, forward;
