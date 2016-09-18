@@ -3,18 +3,19 @@
  *
  */
 
-#include "WPILib.h"
+//#include "WPILib.h"
 #include "Lib830.h"
 #include "Camera.h"
 #include "RobotDrive.h"
 
+//#include "../wpiutils/830utilities.h"
 using namespace Lib830;
 
 class Robot: public IterativeRobot
 {
 
 public:
-	enum driverMode{ ARCADE_DRIVE, TANK_DRIVE, REVERSE_TANK, OPPO_ARCADE }; //arcade drive is the default
+	enum driverMode{ TANK_DRIVE = 1, REVERSE_TANK = 2, OPPO_ARCADE = 3, ARCADE_DRIVE = 4 }; //don't move drive is the default
 
 private: 
 	//drive train
@@ -79,14 +80,15 @@ private:
 
 		//putting the option to choose between the arcade and tank drives on the smart dashboard
 		modeChooser = new SendableChooser();
-		modeChooser-> AddDefault("Arcade Drive", new driverMode(ARCADE_DRIVE));
+		//modeChooser-> AddDefault("Arcade Drive", new driverMode(ARCADE_DRIVE));
 		modeChooser-> AddObject("Tank Drive", new driverMode(TANK_DRIVE));
 		modeChooser-> AddObject("Reverse Tank Drive", new driverMode(REVERSE_TANK));
 		modeChooser-> AddObject("Opposite Arcade Drive", new driverMode(OPPO_ARCADE));
+		modeChooser-> AddObject("Arcade Drive", new driverMode(ARCADE_DRIVE));
 		SmartDashboard::PutData("Mode Chooser", modeChooser);
 		
 		//declaring all our sensors
-		gyro = new Lib830::AnalogGyro(GYRO);
+		//gyro = new Lib830::AnalogGyro(GYRO);
 		acceler = new BuiltInAccelerometer;
 		encoder = new Encoder(ENCODER_A, ENCODER_B);
 		timer = new Timer();
@@ -108,49 +110,55 @@ private:
 
 	void TeleopInit()
 	{
-		float previous_forward = 0;
-	}
 
+	}
+	float previous_forward = 0.0;
+	float leftforward, rightforward, targetForward, turn, forward;
 	void TeleopPeriodic()
 	{
 		//switching between the different drive modes (Tank, Arcade)
 		switch(driveMode) {
 			
 			case REVERSE_TANK:
+				leftforward = accel(leftforward, pilot->LeftY(), TICKS_TO_FULL_SPEED);
+				rightforward = accel(leftforward, pilot->RightX(), TICKS_TO_FULL_SPEED);
+				drive->TankDrive(-leftforward,-rightforward,true);
+				break;
 
 			case TANK_DRIVE:
-				float leftforward = accel(leftforward, pilot->LeftY(), TICKS_TO_FULL_SPEED);
-				float rightforward = accel(leftforward, pilot->RightY(), TICKS_TO_FULL_SPEED);
-				
-				if (driverMode == REVERSE_TANK){
-					drive->TankDrive(-leftforward,-rightforward,true);
-				}
-				else {
-					drive->TankDrive(leftforward,rightforward,true);
-				}
+				leftforward = accel(leftforward, pilot->LeftY(), TICKS_TO_FULL_SPEED);
+				rightforward = accel(leftforward, pilot->RightX(), TICKS_TO_FULL_SPEED);
+				drive->TankDrive(leftforward,rightforward,true);
 				break;
 
 			case OPPO_ARCADE: 
-			//arcade drive
-			default:
-				float targetForward = pilot ->LeftY();
-				float turn = pilot->RightX()/1.4;
-				float forward = accel(previous_forward, targetForward, TICKS_TO_FULL_SPEED);
-				
-				if (driverMode == OPPO_ARCADE){
-					drive->ArcadeDrive(-forward, turn, true);
-				}
-
-				else {
-					drive->ArcadeDrive(forward, turn, true);
-				}
-
+				targetForward = pilot ->LeftY();
+				turn = pilot->RightX()/1.4;
+				forward = accel(previous_forward, targetForward, TICKS_TO_FULL_SPEED);
+				drive->ArcadeDrive(-forward, turn, true);
 				previous_forward = forward;
 				break;
+
+			case ARCADE_DRIVE:
+				targetForward = pilot-> LeftY();
+				turn = pilot->RightX()/-1.4;
+				forward = accel(previous_forward, -targetForward, TICKS_TO_FULL_SPEED);
+				if (forward > 0.5) {
+					forward = 0.5;
+				}
+				else if (forward < -0.5) {
+					forward = -0.5;
+				}
+				drive->ArcadeDrive(forward, turn, true);
+				previous_forward = forward;
+				break;
+
+			default:
+				drive-> ArcadeDrive(0,0,false);
 			}
 
 		//putting data on the smart dashboard
-		SmartDashboard::PutData("gyro", gyro);
+		//SmartDashboard::PutData("gyro", gyro);
 
 		SmartDashboard::PutNumber("accelerometer Z", acceler->GetZ());
 
@@ -173,8 +181,9 @@ private:
 		cameraFeeds -> end();
 	}
 	
-	void DisabledPeriodic {
-		driveMode = modeChooser->GetSelected() ? *(Mode*)modeChooser->GetSelected() : ARCADE_DRIVE;
+	void DisabledPeriodic() {
+		driveMode = modeChooser->GetSelected() ? *(driverMode*)modeChooser->GetSelected() : ARCADE_DRIVE;
+
 		//not quite sure about this, I think it's just a default 
 	}
 };
