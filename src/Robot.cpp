@@ -3,19 +3,17 @@
  *
  */
 
-//#include "WPILib.h"
 #include "Lib830.h"
 #include "Camera.h"
 #include "RobotDrive.h"
 
-//#include "../wpiutils/830utilities.h"
 using namespace Lib830;
 
 class Robot: public IterativeRobot
 {
 
 public:
-	enum driverMode{ TANK_DRIVE, REVERSE_TANK, OPPO_ARCADE, ARCADE_DRIVE }; //don't move drive is the default
+	enum driverMode{ TANK_DRIVE, REVERSE_TANK, OPPO_ARCADE, ARCADE_DRIVE }; //don't move is the default
 
 private: 
 	//drive train
@@ -37,6 +35,7 @@ private:
 	GamepadF310 * pilot;
 	GamepadF310 * copilot;
 
+	//driving yay
 	RobotDrive * drive;
 
 	//more drive train
@@ -62,7 +61,8 @@ private:
 	//speed changer
 	static const int TICKS_TO_FULL_SPEED = 15;
 
-	void RobotInit() {
+	void RobotInit()
+	{
 
 		//drive train!
 		drive = new RobotDrive(
@@ -85,6 +85,7 @@ private:
 		modeChooser-> AddObject("Reverse Tank Drive", new driverMode(REVERSE_TANK));
 		modeChooser-> AddObject("Opposite Arcade Drive", new driverMode(OPPO_ARCADE));
 		modeChooser-> AddObject("Arcade Drive", new driverMode(ARCADE_DRIVE));
+
 		SmartDashboard::PutData("Mode Chooser", modeChooser);
 		
 		//declaring all our sensors
@@ -110,10 +111,12 @@ private:
 
 	void TeleopInit()
 	{
-	printf("mode: %i\n", driveMode);
+		printf("mode: %i\n", driveMode);
 	}
+
 	float previous_forward = 0.0;
 	float leftforward, rightforward, targetForward, turn, forward;
+
 	void TeleopPeriodic()
 	{
 		//switching between the different drive modes (Tank, Arcade)
@@ -153,15 +156,14 @@ private:
 				previous_forward = forward;
 				break;
 
+			//do nothing
 			default:
 				drive-> ArcadeDrive(0,0,false);
 			}
 
 		//putting data on the smart dashboard
 		//SmartDashboard::PutData("gyro", gyro);
-
 		SmartDashboard::PutNumber("accelerometer Z", acceler->GetZ());
-
 		SmartDashboard::PutNumber("Encoder", encoder->Get());
 
 		//camera feed stuff - switching cameras
@@ -177,13 +179,14 @@ private:
 
 	}
 
-	void DisabledInit() {
+	void DisabledInit()
+	{
 		cameraFeeds -> end();
 	}
 	
-	void DisabledPeriodic() {
+	void DisabledPeriodic()
+	{
 		driveMode = modeChooser->GetSelected() ? *(driverMode*)modeChooser->GetSelected() : ARCADE_DRIVE;
-
 		//not quite sure about this, I think it's just a default 
 	}
 };
