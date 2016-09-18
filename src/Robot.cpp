@@ -14,7 +14,7 @@ class Robot: public IterativeRobot
 {
 
 public:
-	enum driverMode{ TANK_DRIVE, REVERSE_TANK, OPPO_ARCADE }; //arcade drive is the default 
+	enum driverMode{ ARCADE_DRIVE, TANK_DRIVE, REVERSE_TANK, OPPO_ARCADE }; //arcade drive is the default
 
 private: 
 	//drive train
@@ -117,14 +117,17 @@ private:
 		switch(driveMode) {
 			
 			case REVERSE_TANK:
+
 			case TANK_DRIVE:
 				float leftforward = accel(leftforward, pilot->LeftY(), TICKS_TO_FULL_SPEED);
 				float rightforward = accel(leftforward, pilot->RightY(), TICKS_TO_FULL_SPEED);
 				
-				if (driverMode == REVERSE_TANK)
+				if (driverMode == REVERSE_TANK){
 					drive->TankDrive(-leftforward,-rightforward,true);
-				else 
+				}
+				else {
 					drive->TankDrive(leftforward,rightforward,true);
+				}
 				break;
 
 			case OPPO_ARCADE: 
@@ -134,15 +137,17 @@ private:
 				float turn = pilot->RightX()/1.4;
 				float forward = accel(previous_forward, targetForward, TICKS_TO_FULL_SPEED);
 				
-				if (driverMode == OPPO_ARCADE)
+				if (driverMode == OPPO_ARCADE){
 					drive->ArcadeDrive(-forward, turn, true);
+				}
 
-				else
+				else {
 					drive->ArcadeDrive(forward, turn, true);
+				}
 
 				previous_forward = forward;
 				break;
-		}
+			}
 
 		//putting data on the smart dashboard
 		SmartDashboard::PutData("gyro", gyro);
@@ -156,7 +161,7 @@ private:
 		if (pilot->ButtonState(GamepadF310::BUTTON_X)) {
 			cameraFeeds-> changeCam(cameraFeeds->kBtCamFront);
 		}
-		if (pilot->ButtonState(GamepadF310::BUTTON_Y)){
+		else if (pilot->ButtonState(GamepadF310::BUTTON_Y)){
 			cameraFeeds-> changeCam(cameraFeeds->kBtCamBack);
 		}
 
@@ -169,7 +174,7 @@ private:
 	}
 	
 	void DisabledPeriodic {
-		driveMode = modeChooser->GetSelected() ? *(Mode*)modeChooser->GetSelected() : TANK_DRIVE;
+		driveMode = modeChooser->GetSelected() ? *(Mode*)modeChooser->GetSelected() : ARCADE_DRIVE;
 		//not quite sure about this, I think it's just a default 
 	}
 };
