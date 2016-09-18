@@ -14,7 +14,7 @@ class Robot: public IterativeRobot
 {
 
 public:
-	enum driverMode{ TANK_DRIVE, ARCADE_DRIVE };
+	enum driverMode{ TANK_DRIVE, REVERSE_TANK, OPPO_ARCADE }; //arcade drive is the default 
 
 private: 
 	//drive train
@@ -81,6 +81,8 @@ private:
 		modeChooser = new SendableChooser();
 		modeChooser-> AddDefault("Arcade Drive", new driverMode(ARCADE_DRIVE));
 		modeChooser-> AddObject("Tank Drive", new driverMode(TANK_DRIVE));
+		modeChooser-> AddObject("Reverse Tank Drive", new driverMode(REVERSE_TANK));
+		modeChooser-> AddObject("Opposite Arcade Drive", new driverMode(OPPO_ARCADE));
 		SmartDashboard::PutData("Mode Chooser", modeChooser);
 		
 		//declaring all our sensors
@@ -113,21 +115,30 @@ private:
 	{
 		//switching between the different drive modes (Tank, Arcade)
 		switch(driveMode) {
-
+			
+			case REVERSE_TANK:
 			case TANK_DRIVE:
 				float leftforward = accel(leftforward, pilot->LeftY(), TICKS_TO_FULL_SPEED);
 				float rightforward = accel(leftforward, pilot->RightY(), TICKS_TO_FULL_SPEED);
-
-				drive->TankDrive(leftforward,rightforward,true);
+				
+				if (driverMode == REVERSE_TANK)
+					drive->TankDrive(-leftforward,-rightforward,true);
+				else 
+					drive->TankDrive(leftforward,rightforward,true);
 				break;
 
+			case OPPO_ARCADE: 
 			//arcade drive
 			default:
 				float targetForward = pilot ->LeftY();
 				float turn = pilot->RightX()/1.4;
 				float forward = accel(previous_forward, targetForward, TICKS_TO_FULL_SPEED);
+				
+				if (driverMode == OPPO_ARCADE)
+					drive->ArcadeDrive(-forward, turn, true);
 
-				drive->ArcadeDrive(forward, turn, true);
+				else
+					drive->ArcadeDrive(forward, turn, true);
 
 				previous_forward = forward;
 				break;
@@ -158,7 +169,7 @@ private:
 	}
 	
 	void DisabledPeriodic {
-		driveMode = modeChooser->GetSelected() ? *(Mode*)modeChooser->GetSelected() : ARCADE_DRIVE;
+		driveMode = modeChooser->GetSelected() ? *(Mode*)modeChooser->GetSelected() : TANK_DRIVE;
 		//not quite sure about this, I think it's just a default 
 	}
 };
