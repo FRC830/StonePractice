@@ -15,7 +15,7 @@ class Robot: public IterativeRobot
 {
 
 public:
-	enum driverMode{ TANK_DRIVE = 1, REVERSE_TANK = 2, OPPO_ARCADE = 3, ARCADE_DRIVE = 4 }; //don't move drive is the default
+	enum driverMode{ TANK_DRIVE, REVERSE_TANK, OPPO_ARCADE, ARCADE_DRIVE }; //don't move drive is the default
 
 private: 
 	//drive train
