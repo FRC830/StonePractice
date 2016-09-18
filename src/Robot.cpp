@@ -124,13 +124,13 @@ private:
 			
 			case REVERSE_TANK:
 				leftforward = accel(leftforward, pilot->LeftY(), TICKS_TO_FULL_SPEED);
-				rightforward = accel(leftforward, pilot->RightX(), TICKS_TO_FULL_SPEED);
+				rightforward = accel(leftforward, pilot->RightY(), TICKS_TO_FULL_SPEED);
 				drive->TankDrive(-leftforward,-rightforward,true);
 				break;
 
 			case TANK_DRIVE:
 				leftforward = accel(leftforward, pilot->LeftY(), TICKS_TO_FULL_SPEED);
-				rightforward = accel(leftforward, pilot->RightX(), TICKS_TO_FULL_SPEED);
+				rightforward = accel(leftforward, pilot->RightY(), TICKS_TO_FULL_SPEED);
 				drive->TankDrive(leftforward,rightforward,true);
 				break;
 
