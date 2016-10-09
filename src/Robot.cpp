@@ -6,8 +6,8 @@
 #include "Lib830.h"
 #include "Camera.h"
 #include "RobotDrive.h"
-
-using namespace Lib830; //!!!!!!!!!!
+#include "WPILib.h"
+using namespace Lib830;
 
 class Robot: public IterativeRobot
 {
@@ -23,7 +23,10 @@ private:
 	static const int RIGHT_PWM_TWO = 3; //when will these comments end?
 	
 	//sensors n' things
-	static const int GYRO_ANALOG = 0;
+
+	enum analog_pins {
+		GYRO_ANALOG = 0,
+	};
 	static const int ENCODER_A = 6;
 	static const int ENCODER_B = 7; //it's a sensor!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
@@ -89,7 +92,7 @@ private:
 		SmartDashboard::PutData("Mode Chooser", modeChooser);
 
 		//declaring all our sensors
-		//gyro = new Lib830::AnalogGyro(GYRO);
+		gyro = new Lib830::AnalogGyro(GYRO_ANALOG);
 		acceler = new BuiltInAccelerometer;
 		encoder = new Encoder(ENCODER_A, ENCODER_B);
 		timer = new Timer();
@@ -104,9 +107,9 @@ private:
 		timer->Reset();
 		timer->Start();
 		gyro->Reset();
+		drive -> ArcadeDrive(0,0,true);
 	}
 	float auton_forward = 0.0;
-
 	void AutonomousPeriodic()
 	{
 		float time = timer->Get();
@@ -116,12 +119,12 @@ private:
 		{
 			drive-> ArcadeDrive(auton_forward, 0,true);
 		}
-		else if (time > 1.0 && time < 3.0) 
+		else if (time >= 1.0 && time <= 3.0)
 		{
 			angle = gyro->GetAngle();
-			if (angle < 180 )
-			{
-				drive->ArcadeDrive(auton_forward, 0.25, true);
+			if (abs(angle) < 160.0) {
+
+				drive->ArcadeDrive(auton_forward, 0.75, true);
 			}
 			else 
 			{
@@ -130,13 +133,13 @@ private:
 		}
 		else if (time > 3.0 && time < 6.0) 
 		{
-			forward = 0.5;
-			drive->ArcadeDrive(0.5, 0, true);
+			auton_forward = 0.5;
+			drive->ArcadeDrive(-0.5, 0, true);
 		}
 		else 
 		{
 			timer->Reset();
-			forward = 0.0;
+			auton_forward = 0.0;
 		}
 		SmartDashboard::PutNumber("Gyro Angle", angle);
 	}
