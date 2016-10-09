@@ -7,7 +7,7 @@
 #include "Camera.h"
 #include "RobotDrive.h"
 
-using namespace Lib830;
+using namespace Lib830; //!!!!!!!!!!
 
 class Robot: public IterativeRobot
 {
@@ -17,29 +17,29 @@ public:
 
 private: 
 	//drive train
-	static const int LEFT_PWM_ONE = 0;
-	static const int LEFT_PWM_TWO = 4;
-	static const int RIGHT_PWM_ONE = 1;
-	static const int RIGHT_PWM_TWO = 3;
+	static const int LEFT_PWM_ONE = 2;
+	static const int LEFT_PWM_TWO = 4; //whoa it's a comment
+	static const int RIGHT_PWM_ONE = 1; //whoa it's another comment
+	static const int RIGHT_PWM_TWO = 3; //when will these comments end?
 	
 	//sensors n' things
 	static const int GYRO = 5;
 	static const int ENCODER_A = 6;
-	static const int ENCODER_B = 7;
+	static const int ENCODER_B = 7; //it's a sensor!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
 	//handling robot burnout if we want to show motors other than drive train running  
 	static const int INTAKE_PDP_CHANNEL = 11;
-	Timer * timer;
+	Timer * timer; //importatnt for auton!!!!!!!
 
 	//controllers
-	GamepadF310 * pilot;
+	GamepadF310 * pilot; //hey look it's the first pointer
 	GamepadF310 * copilot;
 
 	//driving yay
-	RobotDrive * drive;
+	RobotDrive * drive; //this exists yep
 
 	//more drive train
-	VictorSP * frontLeft;
+	VictorSP * frontLeft; //victor Sps are just fancy victors pass it on
 	VictorSP * backLeft;
 	VictorSP * frontRight;
 	VictorSP * backRight;
@@ -59,7 +59,7 @@ private:
 	CAMERAFEEDS * cameraFeeds;
 
 	//speed changer
-	static const int TICKS_TO_FULL_SPEED = 15;
+	static const int TICKS_TO_FULL_SPEED = 15; //robot acceleration!!!!!
 
 	void RobotInit()
 	{
@@ -87,7 +87,7 @@ private:
 		modeChooser-> AddObject("Arcade Drive", new driverMode(ARCADE_DRIVE));
 
 		SmartDashboard::PutData("Mode Chooser", modeChooser);
-		
+
 		//declaring all our sensors
 		//gyro = new Lib830::AnalogGyro(GYRO);
 		acceler = new BuiltInAccelerometer;
@@ -158,7 +158,7 @@ private:
 
 			//do nothing
 			default:
-				drive-> ArcadeDrive(0,0,false);
+				drive-> ArcadeDrive(0, 0, false);
 			}
 
 		//putting data on the smart dashboard
@@ -187,7 +187,6 @@ private:
 	void DisabledPeriodic()
 	{
 		driveMode = modeChooser->GetSelected() ? *(driverMode*)modeChooser->GetSelected() : ARCADE_DRIVE;
-		//not quite sure about this, I think it's just a default 
 	}
 };
 
