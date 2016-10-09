@@ -32,7 +32,7 @@ private:
 	
 	//handling robot burnout if we want to show motors other than drive train running  
 	static const int INTAKE_PDP_CHANNEL = 11;
-	Timer * timer; //importatnt for auton!!!!!!!
+	Timer * timer; //important for auton!!!!!!!
 
 	//controllers
 	GamepadF310 * pilot; //hey look it's the first pointer
