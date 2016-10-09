@@ -101,12 +101,44 @@ private:
 
 	void AutonomousInit()
 	{
-
+		timer->Reset();
+		timer->Start();
+		gyro->Reset();
+		float forward = 0.0;
 	}
 
 	void AutonomousPeriodic()
 	{
+		float time = timer->Get();
+		float angle = gyro->GetAngle();
 
+		if (time < 1.0) 
+		{
+			drive-> ArcadeDrive(forward, 0,true);
+		}
+		else if (time > 1.0 && time < 3.0) 
+		{
+			angle = gyro->GetAngle();
+			if (angle < 180 
+			{
+				drive->ArcadeDrive(forward, 0.25, true);
+			}
+			else 
+			{
+				drive->ArcadeDrive(forward, 0, true);
+			}
+		}
+		else if (time > 3.0 && time < 6.0) 
+		{
+			forward = 0.5;
+			drive->AracdeDrive(0.5, 0, true);
+		}
+		else 
+		{
+			timer->Reset();
+			forward = 0.0;
+		}
+		SmartDashboard::PutNumber("Gyro Angle", angle);
 	}
 
 	void TeleopInit()
@@ -181,7 +213,7 @@ private:
 
 	void DisabledInit()
 	{
-		cameraFeeds -> end();
+		cameraFeeds-> end();
 	}
 	
 	void DisabledPeriodic()
