@@ -23,7 +23,7 @@ private:
 	static const int RIGHT_PWM_TWO = 3; //when will these comments end?
 	
 	//sensors n' things
-	static const int GYRO = 5;
+	static const int GYRO_ANALOG = 0;
 	static const int ENCODER_A = 6;
 	static const int ENCODER_B = 7; //it's a sensor!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
@@ -104,8 +104,8 @@ private:
 		timer->Reset();
 		timer->Start();
 		gyro->Reset();
-		float forward = 0.0;
 	}
+	float auton_forward = 0.0;
 
 	void AutonomousPeriodic()
 	{
@@ -114,24 +114,24 @@ private:
 
 		if (time < 1.0) 
 		{
-			drive-> ArcadeDrive(forward, 0,true);
+			drive-> ArcadeDrive(auton_forward, 0,true);
 		}
 		else if (time > 1.0 && time < 3.0) 
 		{
 			angle = gyro->GetAngle();
-			if (angle < 180 
+			if (angle < 180 )
 			{
-				drive->ArcadeDrive(forward, 0.25, true);
+				drive->ArcadeDrive(auton_forward, 0.25, true);
 			}
 			else 
 			{
-				drive->ArcadeDrive(forward, 0, true);
+				drive->ArcadeDrive(auton_forward, 0, true);
 			}
 		}
 		else if (time > 3.0 && time < 6.0) 
 		{
 			forward = 0.5;
-			drive->AracdeDrive(0.5, 0, true);
+			drive->ArcadeDrive(0.5, 0, true);
 		}
 		else 
 		{
