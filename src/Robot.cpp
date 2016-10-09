@@ -121,9 +121,9 @@ private:
 		else if (time >= 1.0 && time <= 3.0)
 		{
 			angle = gyro->GetAngle();
-			if (angle < 180.0) {
+			if (abs(angle) < 160.0) {
 
-				drive->ArcadeDrive(auton_forward, 0.25, true);
+				drive->ArcadeDrive(auton_forward, 0.75, true);
 			}
 			else 
 			{
@@ -133,7 +133,7 @@ private:
 		else if (time > 3.0 && time < 6.0) 
 		{
 			auton_forward = 0.5;
-			drive->ArcadeDrive(0.5, 0, true);
+			drive->ArcadeDrive(-0.5, 0, true);
 		}
 		else 
 		{
