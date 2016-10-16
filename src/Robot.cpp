@@ -110,14 +110,23 @@ private:
 		drive -> ArcadeDrive(0,0,true);
 	}
 	float auton_forward = 0.0;
+	float turn_const = 0.03;
 	void AutonomousPeriodic()
 	{
 		float time = timer->Get();
 		float angle = gyro->GetAngle();
+		
+		void gyro_update(float gyro_angle) {
+			if (abs(angle) > 5) {
+				float turn = -gyro_angle * turn_const;
+				drive->ArcadeDrive(auton_forward, turn, true);
+			}
+		}
 
 		if (time < 1.0) 
 		{
 			drive-> ArcadeDrive(auton_forward, 0,true);
+			gyro_update(angle);
 		}
 		else if (time >= 1.0 && time <= 3.0)
 		{
@@ -135,6 +144,7 @@ private:
 		{
 			auton_forward = 0.5;
 			drive->ArcadeDrive(-0.5, 0, true);
+			gyro_update(angle);
 		}
 		else 
 		{
