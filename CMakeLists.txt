@@ -6,6 +6,7 @@ project(StonePractice)
 add_subdirectory(lib830)
 include_directories(src lib830)
 
+set(FRC_FORCE_TARGET mdns)
 add_frc_robot(${PROJECT_NAME} 830
     src/Camera.cpp
     src/Robot.cpp
